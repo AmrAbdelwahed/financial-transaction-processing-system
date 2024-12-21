@@ -12,18 +12,64 @@ The Financial Transaction Processing System is a microservices-based application
 ## Prerequisites
 - Docker
 - Docker Compose
-- Maven
-- Node.js
 
 ## Setup
 
-### Backend
+### Steps to Run the Application
 
-1. **Build the Services:**
+1. **Clone the Repository:**
    ```bash
-   cd user-service
-   mvn clean install
-   cd ../transaction-service
-   mvn clean install
-   cd ../notification-service
-   mvn clean install
+   git clone https://github.com/yourusername/financial-transaction-processing-system.git
+   cd financial-transaction-processing-system
+
+2. **Clone the Repository:**
+   ```bash
+   docker-compose up --build
+
+3. **Access the Application:**
+- Frontend: http://localhost:3000
+- User Service API: http://localhost:8081
+- Transaction Service API: http://localhost:8080
+- Notification Service API: http://localhost:8082
+
+## Notes
+
+- The Docker Compose file will handle building the services and starting dependent containers like MongoDB, Kafka, and Zookeeper.
+- MongoDB data will be persisted in a volume called mongo-data.
+- Kafka topics (users and transactions) will be automatically created.
+
+## Directory Structure
+
+financial-transaction-processing-system/
+│
+├── user-service/            # User Service source code
+│   ├── src/
+│   └── Dockerfile           # Dockerfile for User Service
+│
+├── transaction-service/     # Transaction Service source code
+│   ├── src/
+│   └── Dockerfile           # Dockerfile for Transaction Service
+│
+├── notification-service/    # Notification Service source code
+│   ├── src/
+│   └── Dockerfile           # Dockerfile for Notification Service
+│
+├── frontend/                # React-based Frontend source code
+│   ├── src/
+│   └── Dockerfile           # Dockerfile for Frontend
+│
+├── docker-compose.yml       # Orchestrates all services
+└── README.md                # Project documentation
+
+## Troubleshooting
+
+- Use the following command to stop all running containers:
+   ```bash
+   docker-compose down
+
+- Check the logs for any errors:
+   ```bash
+   docker-compose logs
+
+
+
