@@ -60,6 +60,7 @@ The Financial Transaction Processing System is a microservices-based application
    │
    ├── docker-compose.yml       # Orchestrates all services
    └── README.md                # Project documentation
+   ```
 
 ## Troubleshooting
 
