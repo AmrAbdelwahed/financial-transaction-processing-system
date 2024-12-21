@@ -39,27 +39,27 @@ The Financial Transaction Processing System is a microservices-based application
 - Kafka topics (users and transactions) will be automatically created.
 
 ## Directory Structure
-```text
-financial-transaction-processing-system/
-│
-├── user-service/            # User Service source code
-│   ├── src/
-│   └── Dockerfile           # Dockerfile for User Service
-│
-├── transaction-service/     # Transaction Service source code
-│   ├── src/
-│   └── Dockerfile           # Dockerfile for Transaction Service
-│
-├── notification-service/    # Notification Service source code
-│   ├── src/
-│   └── Dockerfile           # Dockerfile for Notification Service
-│
-├── frontend/                # React-based Frontend source code
-│   ├── src/
-│   └── Dockerfile           # Dockerfile for Frontend
-│
-├── docker-compose.yml       # Orchestrates all services
-└── README.md                # Project documentation
+   ```text
+   financial-transaction-processing-system/
+   │
+   ├── user-service/            # User Service source code
+   │   ├── src/
+   │   └── Dockerfile           # Dockerfile for User Service
+   │
+   ├── transaction-service/     # Transaction Service source code
+   │   ├── src/
+   │   └── Dockerfile           # Dockerfile for Transaction Service
+   │
+   ├── notification-service/    # Notification Service source code
+   │   ├── src/
+   │   └── Dockerfile           # Dockerfile for Notification Service
+   │
+   ├── frontend/                # React-based Frontend source code
+   │   ├── src/
+   │   └── Dockerfile           # Dockerfile for Frontend
+   │
+   ├── docker-compose.yml       # Orchestrates all services
+   └── README.md                # Project documentation
 
 ## Troubleshooting
 
