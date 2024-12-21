@@ -39,7 +39,7 @@ The Financial Transaction Processing System is a microservices-based application
 - Kafka topics (users and transactions) will be automatically created.
 
 ## Directory Structure
-
+```text
 financial-transaction-processing-system/
 │
 ├── user-service/            # User Service source code
