@@ -23,11 +23,21 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        kafkaTemplate.send("users", savedUser.getId(), savedUser.toString());
-        return savedUser;
+    	try {
+            System.out.println("Creating user: " + user);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User savedUser = userRepository.save(user);
+            System.out.println("User saved: " + savedUser);
+            kafkaTemplate.send("users", savedUser.getId(), savedUser.toString());
+            return savedUser;
+        }
+    	catch (Exception e) {
+            System.err.println("Error in createUser: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
+
 
     public List<User> getAllUsers() {
         return userRepository.findAll();

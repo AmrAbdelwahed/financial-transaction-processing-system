@@ -5,9 +5,7 @@
   "version": "0.1.0",
   
   "private": true,
-  
-  "homepage": "https://amrabdelwahed.github.io/financial-transaction-processing-system/frontend",
-  
+    
   "dependencies": {
   
     

@@ -1,67 +1,26 @@
-FROM openjdk:17-jre-slim
+# Stage 1: Build the application
+FROM maven:3.8.4-openjdk-17 AS builder
 
+# Set the working directory inside the container
 WORKDIR /app
 
-COPY target/notification-service-0.0.1-SNAPSHOT.jar /app/notification-service.jar
+# Copy the Maven project files (pom.xml and src directory) into the container
+COPY pom.xml ./
+COPY src ./src
 
-CMD ["java", "-jar", "notification-service.jar"]
-Docker Compose
-docker-compose.yml
+# Build the project and create the JAR file
+RUN mvn clean package -DskipTests
 
+# Stage 2: Create the runtime image
+FROM openjdk:17-jdk-alpine
 
-version: '3.8'
+# Set the working directory inside the container
+WORKDIR /app
 
-services:
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
+# Copy the JAR file from the builder stage
+COPY --from=builder /app/target/*.jar app.jar
 
-  kafka:
-    image: wurstmeister/kafka
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    depends_on:
-      - zookeeper
+EXPOSE 8082
 
-  zookeeper:
-    image: wurstmeister/zookeeper
-    ports:
-      - "2181:2181"
-
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-    depends_on:
-      - mongo
-      - kafka
-
-  transaction-service:
-    build:
-      context: ./transaction-service
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
-      - kafka
-
-  notification-service:
-    build:
-      context: ./notification-service
-      dockerfile: Dockerfile
-    ports:
-      - "8082:8082"
-    depends_on:
-      - kafka
-
-volumes:
-  mongo-data:
+# Define the command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

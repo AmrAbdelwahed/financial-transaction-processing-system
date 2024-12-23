@@ -105,7 +105,7 @@ function App() {
 
   const createTransaction = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/transactions', {
+      const response = await fetch('http://localhost:8085/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
