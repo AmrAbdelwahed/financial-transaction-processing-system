@@ -73,7 +73,7 @@ function App() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://transaction-service:8085/api/transactions');
+      const response = await fetch(process.env.REACT_APP_TRANSACTION_SERVICE_URL);
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
@@ -84,7 +84,7 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://user-service:8081/api/users');
+      const response = await fetch(process.env.REACT_APP_USER_SERVICE_URL);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -92,7 +92,7 @@ function App() {
       console.error('Error fetching users:', error);
     }
   };
-
+  
   const handleTransactionChange = (e) => {
     const { name, value } = e.target;
     setNewTransaction({ ...newTransaction, [name]: value });
@@ -105,7 +105,7 @@ function App() {
 
   const createTransaction = async () => {
     try {
-      const response = await fetch('http://transaction-service:8085/api/transactions', {
+      const response = await fetch(process.env.REACT_APP_TRANSACTION_SERVICE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ function App() {
 
   const createUser = async () => {
     try {
-      const response = await fetch('http://user-service:8081/api/users/users', {
+      const response = await fetch(process.env.REACT_APP_USER_SERVICE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ function App() {
         <Container maxWidth="lg">
           {/* Header */}
           <Typography variant="h3" component="h1" align="center" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: '#1a237e' }}>
-            Financial Transaction System
+            StreamlinePay
           </Typography>
 
           {/* Error Alert */}
