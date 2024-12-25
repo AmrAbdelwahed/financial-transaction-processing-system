@@ -18,13 +18,13 @@ public class NotificationServiceApplication {
         @KafkaListener(topics = "transactions", groupId = "notification-group")
         public void listen(String message) {
             System.out.println("Received transaction: " + message);
-            // Add notification logic here
+            // Will add notification logic here
         }
 
         @KafkaListener(topics = "users", groupId = "notification-group")
         public void listenUser(String message) {
             System.out.println("Received user: " + message);
-            // Add notification logic here
+            // Will add notification logic here
         }
     }
 }

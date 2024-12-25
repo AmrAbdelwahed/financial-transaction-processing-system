@@ -73,7 +73,7 @@ function App() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/transactions');
+      const response = await fetch('http://transaction-service:8085/api/transactions');
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
@@ -84,7 +84,7 @@ function App() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/users');
+      const response = await fetch('http://user-service:8081/api/users');
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -105,7 +105,7 @@ function App() {
 
   const createTransaction = async () => {
     try {
-      const response = await fetch('http://localhost:8085/api/transactions', {
+      const response = await fetch('http://transaction-service:8085/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ function App() {
 
   const createUser = async () => {
     try {
-      const response = await fetch('http://localhost:8081/api/users', {
+      const response = await fetch('http://user-service:8081/api/users/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
