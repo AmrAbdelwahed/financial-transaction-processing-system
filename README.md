@@ -22,15 +22,20 @@ The Financial Transaction Processing System is a microservices-based application
    git clone https://github.com/yourusername/financial-transaction-processing-system.git
    cd financial-transaction-processing-system
 
-2. **Clone the Repository:**
+2. **Build and run the services:**
    ```bash
    docker-compose up --build
 
 3. **Access the Application:**
 - Frontend: http://localhost:3000
-- User Service API: http://localhost:8081
-- Transaction Service API: http://localhost:8080
+- User Service API: http://localhost:8081/api/users
+- Transaction Service API: http://localhost:8085/api/transactions
 - Notification Service API: http://localhost:8082
+
+4. **Deployment (preview):**
+- You can preview the frontend of the Financial Transaction Processing System by visiting the following link: React Frontend Preview. Please note that this preview is just the frontend and will not function fully without the backend services.
+- To fully run the application, including the backend services, you need to deploy the backend containers by running the services with Docker Compose. This will ensure proper interaction between the frontend and backend.
+
 
 ## Notes
 
