@@ -77,5 +77,3 @@ The Financial Transaction Processing System is a microservices-based application
    ```bash
    docker-compose logs
 
-
-
