@@ -90,9 +90,6 @@ services:
       - transaction-service
     networks:
       - ft-network
-    environment:
-      REACT_APP_USER_SERVICE_URL: http://user-service:8081/api/users
-      REACT_APP_TRANSACTION_SERVICE_URL: http://transaction-service:8085/api/transactions
 
 networks:
   ft-network:

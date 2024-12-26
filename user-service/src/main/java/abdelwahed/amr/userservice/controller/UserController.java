@@ -26,6 +26,7 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsers() {
+        System.out.println("Received request to fetch all users");
         return userService.getAllUsers();
     }
 }

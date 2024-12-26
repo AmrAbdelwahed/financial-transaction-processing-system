@@ -59,6 +59,12 @@ const theme = createTheme({
   },
 });
 
+// API URLs are now relative
+const API_URLS = {
+  TRANSACTIONS: '/api/transactions',
+  USERS: '/api/users'
+};
+
 function App() {
   const [transactions, setTransactions] = useState([]);
   const [users, setUsers] = useState([]);
@@ -73,23 +79,29 @@ function App() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_TRANSACTION_SERVICE_URL}`);
+      console.log('Fetching transactions from:', API_URLS.TRANSACTIONS);
+      const response = await fetch(API_URLS.TRANSACTIONS);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('Transactions data:', data);
       setTransactions(data);
     } catch (error) {
-      setError('Error fetching transactions');
       console.error('Error fetching transactions:', error);
+      setError(`Error fetching transactions: ${error.message}`);
     }
   };
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_USER_SERVICE_URL}`);
+      console.log('Fetching users from:', API_URLS.USERS);
+      const response = await fetch(API_URLS.USERS);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('Users data:', data);
       setUsers(data);
     } catch (error) {
-      setError('Error fetching users');
       console.error('Error fetching users:', error);
+      setError(`Error fetching users: ${error.message}`);
     }
   };
 
@@ -105,7 +117,7 @@ function App() {
 
   const createTransaction = async () => {
     try {
-      const response = await fetch('http://transaction-service:8085/api/transactions', {
+      const response = await fetch(API_URLS.TRANSACTIONS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +137,7 @@ function App() {
 
   const createUser = async () => {
     try {
-      const response = await fetch('http://user-service:8081/api/users/users', {
+      const response = await fetch(API_URLS.USERS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,25 +155,22 @@ function App() {
     }
   };
 
+  // Rest of your component remains the same...
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', py: 4 }}>
         <Container maxWidth="lg">
-          {/* Header */}
           <Typography variant="h3" component="h1" align="center" gutterBottom sx={{ mb: 4, fontWeight: 'bold', color: '#1a237e' }}>
-            Financial Transaction System
+            StreamlinePay
           </Typography>
 
-          {/* Error Alert */}
           {error && (
             <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
               {error}
             </Alert>
           )}
 
-          {/* Main Content */}
           <Grid container spacing={4}>
-            {/* Transaction Form */}
             <Grid item xs={12} md={6}>
               <Card>
                 <CardHeader 
@@ -197,7 +206,6 @@ function App() {
                         onChange={handleTransactionChange}
                         label="Type"
                       >
-                        <MenuItem value="">Select Type</MenuItem>
                         <MenuItem value="DEBIT">DEBIT</MenuItem>
                         <MenuItem value="CREDIT">CREDIT</MenuItem>
                       </Select>
@@ -225,7 +233,6 @@ function App() {
               </Card>
             </Grid>
 
-            {/* User Form */}
             <Grid item xs={12} md={6}>
               <Card>
                 <CardHeader 
@@ -276,7 +283,6 @@ function App() {
               </Card>
             </Grid>
 
-            {/* Transactions List */}
             <Grid item xs={12} md={6}>
               <Card>
                 <CardHeader 
@@ -289,9 +295,9 @@ function App() {
                 />
                 <CardContent>
                   <List>
-                    {transactions.map((transaction) => (
+                    {transactions.map((transaction, index) => (
                       <Paper
-                        key={transaction.id}
+                        key={transaction.id || index}
                         elevation={1}
                         sx={{ mb: 1, bgcolor: '#fafafa', borderRadius: 2 }}
                       >
@@ -330,7 +336,6 @@ function App() {
               </Card>
             </Grid>
 
-            {/* Users List */}
             <Grid item xs={12} md={6}>
               <Card>
                 <CardHeader 
@@ -343,9 +348,9 @@ function App() {
                 />
                 <CardContent>
                   <List>
-                    {users.map((user) => (
+                    {users.map((user, index) => (
                       <Paper
-                        key={user.id}
+                        key={user.id || index}
                         elevation={1}
                         sx={{ mb: 1, bgcolor: '#fafafa', borderRadius: 2 }}
                       >
