@@ -33,7 +33,7 @@ The Financial Transaction Processing System is a microservices-based application
 - Notification Service API: http://localhost:8082
 
 4. **Deployment (preview):**
-- You can preview the frontend of the Financial Transaction Processing System by visiting the following link: React Frontend Preview. Please note that this preview is just the frontend and will not function fully without the backend services.
+- You can preview the frontend of the Financial Transaction Processing System by visiting the following link: [text](https://financial-transaction-processing-system.vercel.app/). Please note that this preview is just the frontend and will not function fully without the backend services.
 - To fully run the application, including the backend services, you need to deploy the backend containers by running the services with Docker Compose. This will ensure proper interaction between the frontend and backend.
 
 
