@@ -69,9 +69,11 @@ public class NotificationService {
 
     private void sendHighValueTransactionAlert(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("security@streamlinepay.com");
-        message.setTo(transaction.getUserEmail());
-        message.setTo("amrabdelwahed00@gmail.com");
+        message.setTo(new String[]{
+        	    "security@streamlinepay.com",
+        	    transaction.getUserEmail(),
+        	    "amrabdelwahed00@gmail.com"
+        	});
         message.setSubject("High Value Transaction Alert");
         message.setText(String.format(
             "High value transaction detected:\nAmount: $%s\nAccount: %s\nType: %s\nTime: %s",
@@ -91,8 +93,11 @@ public class NotificationService {
 
     private void sendDebitNotification(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(transaction.getUserEmail());
-        message.setTo("amrabdelwahed00@gmail.com");
+        message.setTo(new String[]{
+        		"security@streamlinepay.com",
+        	    transaction.getUserEmail(),
+        	    "amrabdelwahed00@gmail.com"
+        	});
         message.setSubject("Debit Transaction Notification");
         message.setText(String.format(
             "A debit of $%s has been processed on your account %s",
@@ -110,8 +115,11 @@ public class NotificationService {
 
     private void sendCreditNotification(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(transaction.getUserEmail());
-        message.setTo("amrabdelwahed00@gmail.com");
+        message.setTo(new String[]{
+        		"security@streamlinepay.com",
+        	    transaction.getUserEmail(),
+        	    "amrabdelwahed00@gmail.com"
+        	});
         message.setSubject("Credit Transaction Notification");
         message.setText(String.format(
             "A credit of $%s has been processed to your account %s",
@@ -129,7 +137,10 @@ public class NotificationService {
 
     private void sendWelcomeEmail(UserEvent user) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
+        message.setTo(new String[]{
+        		user.getEmail(),
+        		"amrabdelwahed00@gmail.com"
+        });
         message.setSubject("Welcome to StreamlinePay!");
         message.setText(String.format(
             "Dear %s,\n\nWelcome to StreamlinePay! Your account has been successfully created.",

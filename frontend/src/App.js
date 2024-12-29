@@ -67,11 +67,19 @@ function App() {
   // State management
   const [transactions, setTransactions] = useState([]);
   const [users, setUsers] = useState([]);
+  // Form validation state
+  const [formErrors, setFormErrors] = useState({
+    accountNumber: '',
+    amount: '',
+    type: '',
+    userEmail: ''
+  });
+
   const [newTransaction, setNewTransaction] = useState({
     accountNumber: '',
     amount: '',
     type: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0], // Set current date by default
     userEmail: ''
   });
   const [newUser, setNewUser] = useState({
@@ -79,6 +87,14 @@ function App() {
     password: '',
     email: ''
   });
+
+  const [userFormErrors, setUserFormErrors] = useState({
+    username: '',
+    password: '',
+    email: '',
+  });
+
+
   const [error, setError] = useState('');
 
   // Data fetching
@@ -134,7 +150,80 @@ function App() {
   };
 
   // API operations
+  const validateTransactionForm = () => {
+    const errors = {
+      accountNumber: '',
+      amount: '',
+      type: '',
+      userEmail: ''
+    };
+    let isValid = true;
+
+    // Account number validation
+    if (!newTransaction.accountNumber.trim()) {
+      errors.accountNumber = 'Account number is required';
+      isValid = false;
+    }else if (!/^\d{8}$/.test(newTransaction.accountNumber)) {
+      // Regular expression to check for exactly 8 digits
+      errors.accountNumber = 'Account number must be an 8-digit number';
+      isValid = false;
+    }
+
+    // Amount validation
+    if (!newTransaction.amount) {
+      errors.amount = 'Amount is required';
+      isValid = false;
+    } else if (isNaN(newTransaction.amount) || parseFloat(newTransaction.amount) <= 0) {
+      errors.amount = 'Amount must be a positive number';
+      isValid = false;
+    }
+
+    // Type validation
+    if (!newTransaction.type) {
+      errors.type = 'Transaction type is required';
+      isValid = false;
+    }
+
+    // Email validation
+    if (!newTransaction.userEmail) {
+      errors.userEmail = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(newTransaction.userEmail)) {
+      errors.userEmail = 'Please enter a valid email';
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
+  const validateUserForm = () => {
+    const errors = {};
+    let isValid = true;
+
+    if (!newUser.username) {
+      errors.username = 'Username is required.';
+      isValid = false;
+    }
+    if (!newUser.password || newUser.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters.';
+      isValid = false;
+    }
+    if (!newUser.email || !/\S+@\S+\.\S+/.test(newUser.email)) {
+      errors.email = 'A valid email is required.';
+      isValid = false;
+    }
+
+    setUserFormErrors(errors);
+    return isValid;
+  };
+
   const createTransaction = async () => {
+    if (!validateTransactionForm ()) {
+      setError('Please fix the form errors before submitting');
+      return;
+    }
+
     try {
       const response = await fetch(API_URLS.TRANSACTIONS, {
         method: 'POST',
@@ -148,9 +237,15 @@ function App() {
         accountNumber: '',
         amount: '',
         type: '',
-        date: '',
+        date: new Date().toISOString().split('T')[0], // Reset with current date
         userEmail: users[0]?.email || '' // Maintain the auto-populated email
       }));
+      setFormErrors({
+        accountNumber: '',
+        amount: '',
+        type: '',
+        userEmail: ''
+      });
       fetchTransactions();
     } catch (error) {
       setError('Error creating transaction');
@@ -159,6 +254,10 @@ function App() {
   };
 
   const createUser = async () => {
+    if (!validateUserForm ()) {
+      setError('Please fix the form errors before submitting');
+      return;
+    }
     try {
       const response = await fetch(API_URLS.USERS, {
         method: 'POST',
@@ -195,20 +294,26 @@ function App() {
         <Box component="form" sx={{ '& > :not(style)': { mb: 2 } }}>
           <TextField
             fullWidth
+            required
             label="Account Number"
             name="accountNumber"
             value={newTransaction.accountNumber}
             onChange={handleTransactionChange}
+            error={!!formErrors.accountNumber}
+            helperText={formErrors.accountNumber}
           />
           <TextField
             fullWidth
+            required
             label="Amount"
             name="amount"
             type="number"
             value={newTransaction.amount}
             onChange={handleTransactionChange}
+            error={!!formErrors.amount}
+            helperText={formErrors.amount}
           />
-          <FormControl fullWidth>
+          <FormControl fullWidth required error={!!formErrors.type}>
             <InputLabel>Type</InputLabel>
             <Select
               name="type"
@@ -219,6 +324,11 @@ function App() {
               <MenuItem value="DEBIT">DEBIT</MenuItem>
               <MenuItem value="CREDIT">CREDIT</MenuItem>
             </Select>
+            {formErrors.type && (
+              <Typography variant="caption" color="error" sx={{ mt: 1, ml: 2 }}>
+                {formErrors.type}
+              </Typography>
+            )}
           </FormControl>
           <TextField
             fullWidth
@@ -226,10 +336,10 @@ function App() {
             name="date"
             type="date"
             value={newTransaction.date}
-            onChange={handleTransactionChange}
+            disabled  // Disable date field as it's automatically set
             InputLabelProps={{ shrink: true }}
           />
-          <FormControl fullWidth>
+          <FormControl fullWidth required error={!!formErrors.userEmail}>
             <InputLabel>User Email</InputLabel>
             <Select
               name="userEmail"
@@ -244,6 +354,11 @@ function App() {
                 </MenuItem>
               ))}
             </Select>
+            {formErrors.userEmail && (
+              <Typography variant="caption" color="error" sx={{ mt: 1, ml: 2 }}>
+                {formErrors.userEmail}
+              </Typography>
+            )}
           </FormControl>
           <Button
             fullWidth
@@ -273,26 +388,35 @@ function App() {
         <Box component="form" sx={{ '& > :not(style)': { mb: 2 } }}>
           <TextField
             fullWidth
+            required
             label="Username"
             name="username"
             value={newUser.username}
             onChange={handleUserChange}
+            error={!!userFormErrors.username}
+            helperText={userFormErrors.username}
           />
           <TextField
             fullWidth
+            required
             label="Password"
             name="password"
             type="password"
             value={newUser.password}
             onChange={handleUserChange}
+            error={!!userFormErrors.password}
+            helperText={userFormErrors.password}
           />
           <TextField
             fullWidth
+            required
             label="Email"
             name="email"
             type="email"
             value={newUser.email}
             onChange={handleUserChange}
+            error={!!userFormErrors.email}
+            helperText={userFormErrors.email}
           />
           <Button
             fullWidth
