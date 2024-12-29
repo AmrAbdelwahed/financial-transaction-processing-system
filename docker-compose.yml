@@ -72,6 +72,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
+    env_file:
+      - ./notification-service/.env
     depends_on:
       - kafka
     networks:
