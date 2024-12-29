@@ -55,6 +55,7 @@ public class NotificationService {
     private void sendHighValueTransactionAlert(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("security@streamlinepay.com");
+        message.setTo(transaction.getUserEmail());
         message.setSubject("High Value Transaction Alert");
         message.setText(String.format(
             "High value transaction detected:\nAmount: $%s\nAccount: %s\nType: %s\nTime: %s",
