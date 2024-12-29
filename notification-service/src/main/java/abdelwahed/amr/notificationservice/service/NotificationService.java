@@ -30,39 +30,55 @@ public class NotificationService {
         logger.info("NotificationService initialized with emailSender: {}", emailSender);
 
     }
+    
+    @KafkaListener(topics = "users", groupId = "notification-group")
+    public void handleUser(String message) {
+        logger.info("Received user: {}", message);
+        
+        try {
+            // Assuming UserEvent is parsed from the message
+            UserEvent userEvent = objectMapper.readValue(message, UserEvent.class);
+            sendWelcomeEmail(userEvent);
+        } catch (Exception e) {
+            logger.error("Failed to send welcome email", e);
+        }
+    }
 
     @KafkaListener(topics = "transactions", groupId = "notification-group")
     public void handleTransaction(String message) {
         logger.info("Received transaction: {}", message);
-        // Basic email test
+        
         try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo("amrabdelwahed00@gmail.com");
-            mailMessage.setSubject("Test Transaction");
-            mailMessage.setText("Transaction received: " + message);
-            emailSender.send(mailMessage);
-            logger.info("Test email sent successfully");
+            TransactionEvent transactionEvent = objectMapper.readValue(message, TransactionEvent.class);
+            // Trigger debit notification
+            if ("DEBIT".equals(transactionEvent.getType())) {
+                sendDebitNotification(transactionEvent);
+            }
+            // Trigger credit notification
+            if ("CREDIT".equals(transactionEvent.getType())) {
+                sendCreditNotification(transactionEvent);
+            }
+            // Trigger high-value transaction alert if applicable
+            if (transactionEvent.getAmount().compareTo(new BigDecimal("1000")) > 0) {
+                sendHighValueTransactionAlert(transactionEvent);
+            }
         } catch (Exception e) {
-            logger.error("Failed to send email", e);
+            logger.error("Failed to process transaction", e);
         }
-    }
-
-    @KafkaListener(topics = "users", groupId = "notification-group")
-    public void handleUser(String message) {
-        logger.info("Received user: {}", message);
     }
 
     private void sendHighValueTransactionAlert(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("security@streamlinepay.com");
         message.setTo(transaction.getUserEmail());
+        message.setTo("amrabdelwahed00@gmail.com");
         message.setSubject("High Value Transaction Alert");
         message.setText(String.format(
             "High value transaction detected:\nAmount: $%s\nAccount: %s\nType: %s\nTime: %s",
             transaction.getAmount(),
             transaction.getAccountNumber(),
             transaction.getType(),
-            transaction.getDateTime()
+            transaction.getDate()
         ));
         
         try {
@@ -76,6 +92,7 @@ public class NotificationService {
     private void sendDebitNotification(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(transaction.getUserEmail());
+        message.setTo("amrabdelwahed00@gmail.com");
         message.setSubject("Debit Transaction Notification");
         message.setText(String.format(
             "A debit of $%s has been processed on your account %s",
@@ -94,6 +111,7 @@ public class NotificationService {
     private void sendCreditNotification(TransactionEvent transaction) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(transaction.getUserEmail());
+        message.setTo("amrabdelwahed00@gmail.com");
         message.setSubject("Credit Transaction Notification");
         message.setText(String.format(
             "A credit of $%s has been processed to your account %s",
