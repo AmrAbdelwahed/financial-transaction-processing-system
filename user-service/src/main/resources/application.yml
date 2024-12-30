@@ -4,9 +4,13 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/users
+      uri: ${SPRING_DATA_MONGODB_URI}
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+    properties:
+      security.protocol: ${SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL}
+      sasl.mechanism: ${SPRING_KAFKA_PROPERTIES_SASL_MECHANISM}
+      sasl.jaas.config: ${SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG}
     consumer:
       group-id: user-group
       auto-offset-reset: earliest
@@ -15,6 +19,5 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
 user:
   topic: users

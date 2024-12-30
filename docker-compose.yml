@@ -1,38 +1,4 @@
 services:
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - ft-network
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest  # Adding version tag
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
-    networks:
-      - ft-network
-
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    depends_on:
-      - zookeeper
-    networks:
-      - ft-network
 
   user-service:
     build:
@@ -40,14 +6,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
-    depends_on:
-      - mongo
-      - kafka
     networks:
       - ft-network
+    env_file:
+      - ./.env
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/users  # Changed from localhost to service name
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_MONGODB_URI: ${MONGODB_URI}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+      SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
+      SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY}' password='${KAFKA_API_SECRET}';
+      SPRING_KAFKA_PROPERTIES_SASL_MECHANISM: PLAIN
       USER_TOPIC: users
 
   transaction-service:
@@ -56,14 +24,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8085:8085"
-    depends_on:
-      - mongo
-      - kafka
+    env_file:
+      - ./.env
     networks:
       - ft-network
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/transactions  # Changed from localhost to service name
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_MONGODB_URI: ${MONGODB_URI}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+      SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
+      SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY}' password='${KAFKA_API_SECRET}';
+      SPRING_KAFKA_PROPERTIES_SASL_MECHANISM: PLAIN
       TRANSACTION_TOPIC: transactions
 
   notification-service:
@@ -74,12 +44,14 @@ services:
       - "8082:8082"
     env_file:
       - ./notification-service/.env
-    depends_on:
-      - kafka
+      - ./.env
     networks:
       - ft-network
     environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+      SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
+      SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_API_KEY}' password='${KAFKA_API_SECRET}';
+      SPRING_KAFKA_PROPERTIES_SASL_MECHANISM: PLAIN
 
   frontend:
     build:

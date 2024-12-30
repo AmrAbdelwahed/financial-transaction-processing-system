@@ -4,9 +4,13 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://mongo:27017/transactions
+      uri: ${SPRING_DATA_MONGODB_URI}
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+    properties:
+      security.protocol: ${SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL}
+      sasl.mechanism: ${SPRING_KAFKA_PROPERTIES_SASL_MECHANISM}
+      sasl.jaas.config: ${SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG}
     consumer:
       group-id: transaction-group
       auto-offset-reset: earliest
