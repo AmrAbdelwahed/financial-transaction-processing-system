@@ -6,16 +6,27 @@ The Financial Transaction Processing System is a microservices-based application
 ## Components
 - **User Service**: Manages user data and authentication.
 - **Transaction Service**: Processes financial transactions.
-- **Notification Service**: Sends notifications based on transactions and user events.
+- **Notification Service**: Consumer - Sends email notifications based on transactions and user events.
 - **Frontend**: A React-based web application to interact with the backend services.
 
-## Prerequisites
-- Docker
-- Docker Compose
+## Deployment
 
-## Setup
+The application is deployed and can be accessed via the following URL:
 
-### Steps to Run the Application
+**[Financial Transaction Processing System](https://streamlinepay.up.railway.app/)**
+
+This deployment includes both the frontend and backend services, providing full functionality.
+
+
+## Optional: Running the Application Locally with Docker
+
+If you prefer to run the application locally using Docker and Docker Compose, follow these steps:
+
+### Prerequisites
+- Docker (optional)
+- Docker Compose (optional)
+
+### Steps to Run Locally
 
 1. **Clone the Repository:**
    ```bash
@@ -32,12 +43,7 @@ The Financial Transaction Processing System is a microservices-based application
 - Transaction Service API: http://localhost:8085/api/transactions
 - Notification Service API: http://localhost:8082
 
-4. **Deployment (preview):**
-- You can preview the frontend of the Financial Transaction Processing System by visiting the following link: [APP LINK](https://financial-transaction-processing-system.vercel.app/). Please note that this preview is just the frontend and will not function fully without the backend services.
-- To fully run the application, including the backend services, you need to deploy the backend containers by running the services with Docker Compose. This will ensure proper interaction between the frontend and backend.
-
-
-## Notes
+## Notes (If running locally)
 
 - The Docker Compose file will handle building the services and starting dependent containers like MongoDB, Kafka, and Zookeeper.
 - MongoDB data will be persisted in a volume called mongo-data.
