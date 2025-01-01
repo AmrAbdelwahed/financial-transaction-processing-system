@@ -11,7 +11,8 @@ The Financial Transaction Processing System is a microservices-based application
 
 ## Deployment
 
-The application is deployed and can be accessed via the following URL:
+The application is now deployed in a Dockerized environment and can be accessed via the following URL:
+
 
 **[Financial Transaction Processing System](https://streamlinepay.up.railway.app/)**
 
